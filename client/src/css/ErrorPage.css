@@ -1,0 +1,9 @@
+.error-page{
+    border: rgb(0, 0, 0) solid 2px;
+    border-radius: 12px;
+    max-width: fit-content;
+    margin: auto;
+    padding: 3em;
+    margin-top: 10%;
+    text-align: center;
+}
