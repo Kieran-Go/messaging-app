@@ -17,7 +17,7 @@ export default {
         // Base where
         const where = { NOT: { id } };
 
-        // Add AND condition if filter provided
+        // Add AND condition to where if filter provided
         if (filter) {
             where.AND = [
                 { username: { contains: filter, mode: 'insensitive' } }
