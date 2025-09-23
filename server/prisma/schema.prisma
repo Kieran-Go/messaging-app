@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  username String    @unique @db.VarChar(32)
+  password String    @db.VarChar(255)
+  lastSeen DateTime? @map("last_seen")
+
+  // relations
+  friendshipsRequested Friendship[] @relation("RequestedFriendships")
+  friendshipsReceived  Friendship[] @relation("ReceivedFriendships")
+  chats                ChatMember[]
+  messages             Message[]
+  blocksMade           Block[]      @relation("BlocksMade")
+  blocksReceived       Block[]      @relation("BlocksReceived")
+
+  @@map("users")
+}
+
+model Friendship {
+  id          Int      @id @default(autoincrement())
+  requesterId Int      @map("requester_id")
+  receiverId  Int      @map("receiver_id")
+  accepted    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // relations
+  requester User @relation("RequestedFriendships", fields: [requesterId], references: [id], onDelete: Cascade)
+  receiver  User @relation("ReceivedFriendships", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, receiverId])
+  @@map("friendships")
+}
+
+model Chat {
+  id       Int          @id @default(autoincrement())
+  name     String?
+  members  ChatMember[]
+  messages Message[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  id       Int      @id @default(autoincrement())
+  chatId   Int      @map("chat_id")
+  userId   Int      @map("user_id")
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  // relations
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+  @@map("chat_members")
+}
+
+model Message {
+  id      Int      @id @default(autoincrement())
+  chatId  Int      @map("chat_id")
+  userId  Int?     @map("user_id")
+  content String
+  sentAt  DateTime @default(now()) @map("sent_at")
+
+  // relations
+  chat Chat  @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("messages")
+}
+
+model Block {
+  id        Int      @id @default(autoincrement())
+  blockerId Int      @map("blocker_id")
+  blockedId Int      @map("blocked_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // relations
+  blocker User @relation("BlocksMade", fields: [blockerId], references: [id])
+  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id])
+
+  @@unique([blockerId, blockedId])
+  @@map("blocked_users")
+}
