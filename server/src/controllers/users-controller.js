@@ -7,7 +7,7 @@ const SALT = parseInt(process.env.SALT_ROUNDS) || 10;
 export default {
     // ----- GET -----
     getUser: async (id) => {
-        return prisma.user.findUnique({
+        return await prisma.user.findUnique({
             where: { id },
             select: { id: true, username: true, lastSeen: true }
         });
@@ -24,7 +24,7 @@ export default {
             ];
         }
 
-        return prisma.user.findMany({
+        return await prisma.user.findMany({
             where,
             select: { id: true, username: true, lastSeen: true },
             orderBy: { username: 'asc' }
@@ -50,7 +50,7 @@ export default {
         }
         if(lastSeen) data.lastSeen = lastSeen;
 
-        return prisma.user.update({
+        return await prisma.user.update({
             where: { id },
             data
         });
@@ -58,6 +58,6 @@ export default {
 
     // ----- DELETE -----
     deleteUser: async (id) => {
-        return prisma.user.delete({ where: { id }});
+        return await prisma.user.delete({ where: { id }});
     },
 }
