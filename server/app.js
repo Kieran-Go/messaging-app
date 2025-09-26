@@ -17,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use('/users', routes.users);
 app.use('/friendships', routes.friendships);
+app.use('/blocks', routes.blocks);
 
 // Error handling middleware
 app.use(errorMiddleware);

@@ -4,7 +4,6 @@ import newError from '../util/newError.js';
 export default {
     // ----- GET -----
     getFriendships: async (userId) => {
-        // Get friendships where userId is equal to requesterId OR receiverId
         const friendships = await prisma.friendship.findMany({
             where: {
                 OR: [
@@ -12,12 +11,29 @@ export default {
                     { receiverId: userId }
                 ]
             },
-            include: {
-                requester: true,
-                receiver: true
+            select: {
+                id: true,
+                accepted: true,
+                createdAt: true,
+                requesterId: true,
+                receiverId: true,
+                requester: {
+                    select: {
+                        id: true,
+                        username: true,
+                        lastSeen: true
+                    }
+                },
+                receiver: {
+                    select: {
+                        id: true,
+                        username: true,
+                        lastSeen: true
+                    }
+                }
             }
         });
-        // Map friendships so only the friends of the user are returned
+
         return friendships.map(f => {
             const friend = f.requesterId === userId ? f.receiver : f.requester;
             return {
@@ -26,12 +42,24 @@ export default {
                 accepted: f.accepted,
                 createdAt: f.createdAt,
                 isRequester: f.requesterId === userId
-            }
+            };
         });
     },
 
+
     // ----- POST -----
     createFriendship: async (requesterId, receiverId) => {
+        // Check if block exists
+        const block = await prisma.block.findFirst({
+            where: {
+                OR: [
+                    { blockerId: requesterId, blockedId: receiverId },
+                    { blockerId: receiverId, blockedId: requesterId }
+                ]
+            }
+        });
+        if(block) throw newError("Cannot add friend while blocked", 403);
+
         return await prisma.friendship.create({
             data: { requesterId, receiverId, }
         });
