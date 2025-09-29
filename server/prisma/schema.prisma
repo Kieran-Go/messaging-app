@@ -41,19 +41,23 @@ model Friendship {
 }
 
 model Chat {
-  id       Int          @id @default(autoincrement())
-  name     String?
-  members  ChatMember[]
-  messages Message[]
+  id        Int          @id @default(autoincrement())
+  name      String?
+  isGroup   Boolean      @default(false) @map("is_group")
+  updatedAt DateTime     @default(now()) @map("updated_at")
+  members   ChatMember[]
+  messages  Message[]
 
   @@map("chats")
 }
 
 model ChatMember {
-  id       Int      @id @default(autoincrement())
-  chatId   Int      @map("chat_id")
-  userId   Int      @map("user_id")
-  joinedAt DateTime @default(now()) @map("joined_at")
+  id          Int      @id @default(autoincrement())
+  chatId      Int      @map("chat_id")
+  userId      Int      @map("user_id")
+  joinedAt    DateTime @default(now()) @map("joined_at")
+  hidden      Boolean  @default(false)
+  unreadCount Int      @default(0) @map("unread_count")
 
   // relations
   chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
