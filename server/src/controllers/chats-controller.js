@@ -4,7 +4,7 @@ import newError from '../util/newError.js';
 // Helper function for getting and formatting an individual chat
 async function hydrateChat(id, userId) {
     const [, chat] = await prisma.$transaction([
-        // First, reset the unread count
+        // First, reset the unread count for the user
         prisma.chatMember.update({
             where: { chatId_userId: { chatId: id, userId } },
             data: { unreadCount: 0 }
@@ -98,7 +98,7 @@ export default {
                 chat => chat.members.length === 2
             );
 
-            // If the private DM between the two users exists, get that chat instead
+            // If the private DM between the two users exists, get that instead
             if (existingChat) return await hydrateChat(existingChat.id, memberIds[0]);
         }
 
@@ -189,6 +189,20 @@ export default {
                 data: { hidden: true }
             });
         }
+    },
+
+    // Unhide a user's hidden chat
+    unhideChat: async(id, userId) => {
+        const chat = await prisma.chat.findUnique({
+            where: { id }, include: { members: true }
+        });
+
+        if(!chat) throw newError("Chat not found", 404);
+
+        return await prisma.chatMember.update({
+            where: { chatId_userId: { chatId: id, userId }},
+            data: { hidden: false }
+        });
     },
 
     // Edit a chat message

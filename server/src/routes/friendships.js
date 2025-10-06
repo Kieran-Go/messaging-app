@@ -1,16 +1,17 @@
 import { Router } from "express";
 import controller from "../controllers/friendships-controller.js";
 import newError from "../util/newError.js";
-import validator from "../validation/friendshipsValidator.js";
+import val from "../validation/friendshipsValidator.js";
+import verifyToken from "../middleware/verifyToken.js";
 
 // Initialize router
 const router = Router();
 
 // ----- GET -----
-router.get('/:userId', validator.userId, async(req, res, next) => {
+router.get('/', verifyToken, async(req, res, next) => {
     try {
-        const userId = parseInt(req.params.userId, 10);
-        const friendships = await controller.getFriendships(userId);
+        const { id } = req.user;
+        const friendships = await controller.getFriendships(id);
         res.json(friendships);
     }
     catch(err) {
@@ -19,13 +20,13 @@ router.get('/:userId', validator.userId, async(req, res, next) => {
 });
 
 // ----- POST -----
-router.post('/:userId', validator.createFriendship, async(req, res, next) => {
+router.post('/', verifyToken, val.receiverId, async(req, res, next) => {
     try {
-        const userId = parseInt(req.params.userId, 10);
+        const { id } = req.user;
         const { receiverId } = req.body;
-        if(userId === receiverId) throw newError("Cannot send friend request to yourself", 400);
+        if(id === receiverId) throw newError("Cannot send friend request to yourself", 400);
 
-        const newFriend = await controller.createFriendship(userId, receiverId);
+        const newFriend = await controller.createFriendship(id, receiverId);
         res.json(newFriend);
     }
     catch(err) {
@@ -34,11 +35,11 @@ router.post('/:userId', validator.createFriendship, async(req, res, next) => {
 });
 
 // ----- PUT -----
-router.put('/:userId/:id', validator.userId, validator.friendshipId, async(req, res, next) => {
+router.put('/:friendshipId', verifyToken, val.friendshipId, async(req, res, next) => {
     try {
-        const userId = parseInt(req.params.userId, 10);
-        const id = parseInt(req.params.id, 10);
-        const acceptedFriendship = await controller.acceptFriendship(id, userId);
+        const { id } = req.user;
+        const friendshipId = parseInt(req.params.friendshipId, 10);
+        const acceptedFriendship = await controller.acceptFriendship(friendshipId, id);
         res.json(acceptedFriendship);
     }
     catch(err) {
@@ -47,10 +48,10 @@ router.put('/:userId/:id', validator.userId, validator.friendshipId, async(req, 
 });
 
 // ----- DELETE -----
-router.delete('/:id', validator.friendshipId, async(req, res, next) => {
+router.delete('/:friendshipId', verifyToken, val.friendshipId, async(req, res, next) => {
     try {
-        const id = parseInt(req.params.id, 10);
-        const deletedFriendship = await controller.deleteFriendship(id);
+        const friendshipId = parseInt(req.params.friendshipId, 10);
+        const deletedFriendship = await controller.deleteFriendship(friendshipId);
         res.json(deletedFriendship);
     }
     catch(err) {

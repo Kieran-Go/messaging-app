@@ -1,16 +1,17 @@
 import { Router } from "express";
 import controller from "../controllers/blocks-controller.js";
 import newError from "../util/newError.js";
-import validator from "../validation/blocksValidator.js";
+import val from "../validation/blocksValidator.js";
+import verifyToken from "../middleware/verifyToken.js";
 
 // Initialize router
 const router = Router();
 
 // ----- GET -----
-router.get('/:userId', validator.userId, async(req, res, next) => {
+router.get('/', verifyToken, async(req, res, next) => {
     try {
-        const userId = parseInt(req.params.userId, 10);
-        const blocks = await controller.getBlocks(userId);
+        const { id } = req.user;
+        const blocks = await controller.getBlocks(id);
         res.json(blocks);
     }
     catch(err) {
@@ -19,13 +20,13 @@ router.get('/:userId', validator.userId, async(req, res, next) => {
 });
 
 // ----- POST ----- 
-router.post('/:userId/:blockedId', validator.userId, validator.blockedId, async(req, res, next) => {
+router.post('/:blockedId', verifyToken, val.blockedId, async(req, res, next) => {
     try {
-        const blockerId = parseInt(req.params.userId, 10);
+        const { id } = req.user;
         const blockedId = parseInt(req.params.blockedId, 10);
-        if(blockerId === blockedId) throw newError("Cannot block yourself", 400);
+        if(id === blockedId) throw newError("Cannot block yourself", 400);
         
-        const block = await controller.createBlock(blockerId, blockedId);
+        const block = await controller.createBlock(id, blockedId);
         res.json(block);
     }
     catch (err) {
@@ -34,13 +35,13 @@ router.post('/:userId/:blockedId', validator.userId, validator.blockedId, async(
 });
 
 // ----- DELETE -----
-router.delete('/:userId/:blockedId', validator.userId, validator.blockedId, async (req, res, next) => {
+router.delete('/:blockedId', verifyToken, val.blockedId, async (req, res, next) => {
     try {
-        const blockerId = parseInt(req.params.userId, 10);
+        const { id } = req.user;
         const blockedId = parseInt(req.params.blockedId, 10);
-        if(blockerId === blockedId) throw newError("Cannot unblock yourself", 400);
+        if(id === blockedId) throw newError("Cannot unblock yourself", 400);
 
-        const block = await controller.deleteBlock(blockerId, blockedId);
+        const block = await controller.deleteBlock(id, blockedId);
         res.json(block);
     } 
     catch (err) {

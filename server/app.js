@@ -15,9 +15,11 @@ app.use(corsMiddleware);
 app.use(express.json());
 
 // Routes
+app.use('/auth', routes.auth);
 app.use('/users', routes.users);
 app.use('/friendships', routes.friendships);
 app.use('/blocks', routes.blocks);
+app.use('/chats', routes.chats);
 
 // Error handling middleware
 app.use(errorMiddleware);

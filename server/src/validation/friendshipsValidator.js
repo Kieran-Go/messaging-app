@@ -17,10 +17,7 @@ export default {
         validateRequest
     ],
 
-    createFriendship: [
-        param('userId')
-            .isInt({gt: 0}).withMessage('ID must be a positive integer'),
-
+    receiverId: [
         body('receiverId')
             .isInt({gt: 0}).withMessage('ID must be a positive integer')
             .notEmpty().withMessage('ID of receiver is required'),
