@@ -1,9 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import corsMiddleware from './src/middleware/corsConfig.js';
 import errorMiddleware from './src/middleware/errorHandler.js';
 import routes from './src/index.js';
 import prisma from './db/pool.js';
-import 'dotenv/config';
 
 // Initialize express
 const app = express();
