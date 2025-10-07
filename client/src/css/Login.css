@@ -1,0 +1,78 @@
+/* Header for the login page */
+.login-header{
+    color: black;
+    background-color: rgb(210, 245, 255);
+    text-align: center;
+    padding: 0.25rem;
+}
+
+/* Container for the form and related elements */
+.auth-form{
+    background-color: rgb(210, 245, 255);
+    width: 500px;
+    padding: 2rem;
+    padding-top: 5px;
+    border-radius: 12px;
+    margin: auto;
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* Form styles */
+.auth-form form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-form label {
+    font-weight: bold;
+}
+
+.auth-form .form-input {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+/* Form button */
+.auth-form button {
+    border-radius: 12px;
+    background-color: rgb(0, 131, 246);
+    color: white;
+    width: fit-content;
+    padding: 0.5em;
+    margin: auto;
+    margin-top: 20px;
+    border: none;
+}
+.auth-form button:hover {
+    cursor: pointer;
+    background-color: rgb(91, 176, 255);
+}
+
+/* Form mode toggle element */
+.auth-form .mode-toggler {
+    margin: auto;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.auth-form .mode-toggler:hover {
+    cursor: pointer;
+    color: rgb(141, 141, 141);
+}
+
+/* Error styles */
+.input-error {
+    color: red;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Media Queries */
+@media(max-width: 550px) {
+    .auth-form{
+        width: 250px;
+        padding: 2rem;
+    }
+}

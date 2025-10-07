@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { AuthContext } from "./AuthContext"
+import Login from "./Login";
 
 export default function App() {
   // Get user and authLoading context
@@ -9,7 +10,7 @@ export default function App() {
   if(authLoading) return <>Loading...</>
 
   // Render the login page if no authenticated user
-  if(!user) return <>Login...</>
+  if(!user) return <Login />
 
   // Render main app components
   return (
