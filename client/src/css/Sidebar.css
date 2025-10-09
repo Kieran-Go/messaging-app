@@ -1,0 +1,102 @@
+/* Main container for sidebar */
+.sidebar{
+    background-color: rgb(203, 232, 255);
+
+    text-align: center;
+    border: dotted black 1px;
+    transition: transform 0.3s ease;
+    height: 100vh;
+}
+
+/* Hide menu button and close button */
+.menu-btn {
+    display: none;
+}
+.close-btn{
+    display: none;
+}
+
+/* Head and account info */
+.sidebar .head, .sidebar .account-info {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    border-bottom: dotted black 1px;
+}
+.sidebar .head img{
+    max-width: 50px;
+}
+
+/* Menu wrapper */
+.menu-wrapper{
+    text-align: left;
+}
+
+.menu-wrapper h3, .menu-select{
+    padding-left: 20px;
+}
+
+/* Menu select */
+.menu-select{
+    display: flex;
+    gap: 20px;
+    transition: background-color 0.1s ease;
+}
+.menu-select:hover{
+    cursor: pointer;
+    background-color: rgb(215, 215, 215);
+}
+
+
+/* Media Queries */
+@media(max-width: 550px) {
+    /* Dim the screen with overlay element when sidebar is showing */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 900;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+    .overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Make sidebar overlay the page*/
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        z-index: 1000;
+        transform: translateX(0);
+    }
+    /* If sidebar is hidden, move it offscreen to the left */
+    .sidebar.hidden{
+        transform: translateX(-100%);
+    }
+
+    /* Show the menu button unless it is hidden */
+    .menu-btn{
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+    }
+    .menu-btn.hidden {
+        display: none;
+    }
+
+    /* Show the close button */
+    .close-btn{
+        display: block;
+        position: fixed;
+        top: 0px;
+        right: 0px;
+    }
+}

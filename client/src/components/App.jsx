@@ -1,21 +1,41 @@
 import { useContext } from "react"
 import { AuthContext } from "./AuthContext"
 import Login from "./Login";
+import Sidebar from "./Sidebar";
+import Chats from "./Chats";
+import Friends from "./Friends";
+import Account from "./Account";
+import { useState } from "react";
+
+// Map of components
+const mainComponents = {
+  chats: Chats,
+  friends: Friends,
+  account: Account,
+};
 
 export default function App() {
-  // Get user and authLoading context
+  // ----- CONTEXTS -----
   const { user, authLoading } = useContext(AuthContext);
 
-  // Render Loading component when authLoading
-  if(authLoading) return <>Loading...</>
+  // ----- STATES -----
+  const [ activeComponent, setActiveComponent ] = useState(mainComponents.chats);
 
-  // Render the login page if no authenticated user
-  if(!user) return <Login />
+  // ----- RENDER -----
+  if(authLoading) return <>Loading...</> // Render Loading component when authLoading
+  if(!user) return <Login /> // Render the login page if no authenticated user
 
   // Render main app components
+  const ActiveComponent = activeComponent;
   return (
-    <>
-      <h1>Hello, World!</h1>
-    </>
+    <div className="page-wrapper">
+      {/* Sidebar */}
+      <Sidebar mainComponents={mainComponents} setActiveComponent={setActiveComponent} />
+
+      {/* Active component */}
+      <div className="main-content">
+        {ActiveComponent}
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,27 @@
+/* Wrapper for entire page */
+.page-wrapper{
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+/* Normalize width of all img elements */
+img {
+    max-width: 30px;
+}
+
+/* All elements with the btn class must have cursor pointer on hover */
+.btn:hover {
+    cursor: pointer;
+}
+
+/* Wrapper for main component */
+.main-content{
+    text-align: center;
+}
+
+/* Media Queries */
+@media(max-width: 550px) {
+    .page-wrapper{
+        display: block;
+    }
+}
