@@ -56,13 +56,31 @@ router.post('/', val.username, val.password, async (req, res, next) => {
 });
 
 // ----- PUT -----
-// Update existing user
-router.put('/', verifyToken, val.editUser, async (req, res, next) => {
+// Update existing user's name
+router.put('/username', verifyToken, val.username, val.password, async (req, res, next) => {
     try{
         const { id } = req.user;
-        const { username = null, password = null, lastSeen = null } = req.body || {};
+        const { username, password } = req.body;
 
-        const editedUser = await controller.editUser(id, username, password, lastSeen);
+        const editedUser = await controller.editUsername(id, username, password);
+        res.json(editedUser);        
+    }
+    catch(err) {
+        if(err.code === 'P2002' && err.meta?.target?.includes('username')) {
+            err.message = "This name is already taken";
+            err.status = 400;
+        }
+        next(err);
+    }
+});
+
+// Update existing user's password
+router.put('/password', verifyToken, val.password, val.newPassword, async (req, res, next) => {
+    try{
+        const { id } = req.user;
+        const { password, newPassword } = req.body;
+
+        const editedUser = await controller.editUserPassword(id, password, newPassword);
         res.json(editedUser);        
     }
     catch(err) {
@@ -72,11 +90,12 @@ router.put('/', verifyToken, val.editUser, async (req, res, next) => {
 
 // ----- DELETE -----
 // Delete user
-router.delete('/', verifyToken, async (req, res, next) => {
+router.delete('/', verifyToken, val.password, async (req, res, next) => {
     try{
         const { id } = req.user;
+        const { password } = req.body;
 
-        const deletedUser = await controller.deleteUser(id);
+        const deletedUser = await controller.deleteUser(id, password);
         res.json(deletedUser);        
     }
     catch(err) {

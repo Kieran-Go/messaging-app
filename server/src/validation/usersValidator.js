@@ -28,6 +28,14 @@ export default {
         validateRequest
     ],
 
+    newPassword: [
+        body("newPassword")
+            .notEmpty().withMessage("New password is required")
+            .isLength({ min: 8, max: 64 }).withMessage("Password must be 8-64 characters long"),
+
+        validateRequest
+    ],
+
     lastSeen: [
         body("lastSeen")
             .optional({ checkFalsy: true })
