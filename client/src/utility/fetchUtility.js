@@ -26,7 +26,7 @@ export async function request(endpoint, { method = "GET", body, token, headers =
 }
 
 // HTTP wrappers
-export const getJson = (endpoint, options) => request(endpoint, { method: "GET", ...options });
+export const getJson = (endpoint, body, options) => request(endpoint, { method: "GET", body, ...options });
 export const postJson = (endpoint, body, options) => request(endpoint, { method: "POST", body, ...options });
 export const putJson = (endpoint, body, options) => request(endpoint, { method: "PUT", body, ...options });
-export const deleteJson = (endpoint, options) => request(endpoint, { method: "DELETE", ...options });
+export const deleteJson = (endpoint, body, options) => request(endpoint, { method: "DELETE", body, ...options });

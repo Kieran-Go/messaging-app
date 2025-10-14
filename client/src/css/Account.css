@@ -1,0 +1,113 @@
+/* Card for account info setting */
+.account-page-wrapper .edit-card{
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    border: solid black 1px;
+    width: fit-content;
+    padding: 5px 20px 5px 20px;
+    border-radius: 12px;
+    background-color: rgb(219, 219, 219);
+    box-shadow: 1px 1px 0.5px 0px rgba(0,0,0,0.75);
+    margin-bottom: 15px;
+}
+.account-page-wrapper .edit-card p span{
+    font-weight: bold;
+}
+
+/* Buttons */
+.account-page-wrapper button{
+    width: fit-content;
+    padding: 5px 20px 5px 20px;
+    background-color: rgb(9, 139, 221);
+    color: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 1px 1px 0.5px 0px rgba(0,0,0,0.75);
+}
+.account-page-wrapper button:hover{
+    cursor: pointer;
+    background-color: rgb(84, 190, 255);
+}
+
+.account-page-wrapper .delete-btn {
+    background-color: rgb(185, 1, 1);
+}
+.account-page-wrapper .delete-btn:hover{
+    cursor: pointer;
+    background-color: red;
+}
+
+/* Black overlay */
+.account-page-wrapper .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 900;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.account-page-wrapper .overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Edit user info form */
+.edit-user-form {
+  text-align: center;
+  gap: 20px;
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(255, 255, 255);
+  border: solid black 1px;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  width: fit-content;
+
+  /* animation */
+  opacity: 0;  
+  transform: translate(-50%, -60%);
+  animation: slideIn 0.5s ease forwards;
+}
+
+/* Form input */
+.edit-user-form .form-input{
+  margin-bottom: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form submit button */
+.edit-user-form button{
+  margin-top: 20px;
+}
+
+/* Form closing button */
+.edit-user-form .close-btn {
+  position: fixed;
+  top: 2%;
+  right: 2%;
+}
+.edit-user-form .close-btn:hover{
+  cursor: pointer;
+}
+
+/* keyframes for the form's slide-in animation of the form*/
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}

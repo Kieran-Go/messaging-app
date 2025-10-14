@@ -16,7 +16,7 @@ img {
 
 /* Wrapper for main component */
 .main-content{
-    text-align: center;
+    padding-left: 50px;
 }
 
 /* Media Queries */

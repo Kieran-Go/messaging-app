@@ -1,17 +1,16 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { AuthContext } from "./AuthContext"
 import Login from "./Login";
 import Sidebar from "./Sidebar";
 import Chats from "./Chats";
 import Friends from "./Friends";
 import Account from "./Account";
-import { useState } from "react";
 
 // Map of components
 const mainComponents = {
-  chats: Chats,
-  friends: Friends,
-  account: Account,
+  chats: () => { return (<Chats />)},
+  friends: () => { return (<Friends />)},
+  account: () => { return (<Account />)},
 };
 
 export default function App() {
