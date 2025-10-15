@@ -1,3 +1,7 @@
+.account-page-wrapper{
+  padding-left: 50px;
+}
+
 /* Card for account info setting */
 .account-page-wrapper .edit-card{
     display: flex;

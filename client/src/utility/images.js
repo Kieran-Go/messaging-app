@@ -6,6 +6,7 @@ import logo from '../assets/img/logo.svg';
 import logout from '../assets/img/logout.svg';
 import menu from '../assets/img/menu.svg';
 import profile from '../assets/img/profile.svg';
+import search from "../assets/img/search.svg";
 
 export default {
     account,
@@ -16,4 +17,5 @@ export default {
     logout,
     menu,
     profile,
+    search,
 }

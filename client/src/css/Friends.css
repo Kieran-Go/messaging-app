@@ -1,0 +1,50 @@
+/* Main wrapper for page */
+.friends-page-wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Wrapper for a column */
+.friends-page-wrapper .column{
+    border: dotted black 1px;
+    border-bottom: none;
+    border-left: none;
+    height: 100vh;
+}
+
+/* Search bar inside a column */
+.column .search-bar{
+    border-bottom: dotted black 1px;
+    display: flex;
+    align-items: center;
+    padding: 20px 10px 20px 10px;
+    gap: 10px;
+}
+
+/* Searchbar input */
+.column .search-bar input{
+    width: 100%;
+    padding: 5px;
+    border-radius: 6px;
+    border: solid black 1px;
+}
+
+/* searchbar button */
+.column .search-bar img{
+    transition: background-color 0.1s ease-in;
+    border-radius: 12px;
+    padding: 5px;
+}
+.column .search-bar img:hover{
+    cursor: pointer;
+    background-color: rgb(234, 234, 234);
+}
+
+/* Column title */
+.column .column-title{
+    padding: 0 10px 0 10px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-bottom: dotted black 1px;
+}
