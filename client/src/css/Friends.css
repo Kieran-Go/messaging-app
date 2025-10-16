@@ -37,7 +37,7 @@
 }
 .column .search-bar img:hover{
     cursor: pointer;
-    background-color: rgb(234, 234, 234);
+    background-color: rgb(195, 195, 195);
 }
 .column .search-bar button{
     margin: 8.25px 0 8.25px 0;
@@ -83,4 +83,97 @@
     border-radius: 50%;
     color: white;
     background-color: red;
+}
+
+/* Item list */
+.friends-page-wrapper .list-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid black 1px;
+    padding: 0 20px 0 20px;
+    transition: background-color 0.1s ease-in;
+}
+.friends-page-wrapper .list-item:hover{
+    cursor: pointer;
+    background-color: rgb(235, 235, 235);
+}
+
+/* User info */
+.user-info p{
+    color: gray;
+    margin-top: -20px;
+}
+
+/* User actions */
+.user-actions{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.user-actions img{
+    border-radius: 50%;
+    padding: 5px;
+    transition: background-color 0.1s ease-in;
+}
+.user-actions img:hover{
+    cursor: pointer;
+    background-color: rgb(195, 195, 195);
+}
+
+/* Add friend button */
+.user-actions .add-friend-btn{
+    color: white;
+    background-color: green;
+    border-radius: 12px;
+    padding: 5px;
+    transition: background-color 0.1s ease-in;
+}
+.user-actions .add-friend-btn:hover{
+    cursor: pointer;
+    background-color: rgb(2, 190, 2);
+}
+
+/* Decline friend button */
+.user-actions .decline-friend-btn{
+    color: white;
+    background-color: rgb(148, 0, 0);
+    border-radius: 12px;
+    padding: 5px;
+    transition: background-color 0.1s ease-in;
+}
+.user-actions .decline-friend-btn:hover{
+    cursor: pointer;
+    background-color: red;
+}
+
+/* Sub-menu */
+.sub-menu{
+    position: fixed;
+    border: solid black 1px;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 1000;
+    background-color: white;
+}
+
+.sub-menu p{
+    border-radius: 4px;
+    padding: 0 5px 0 5px;
+    margin: 2px 0 2px 0;
+    transition: background-color 0.1s ease-in;
+}
+.sub-menu p:hover{
+    cursor: pointer;
+    background-color: rgb(195, 195, 195);
+}
+
+.submenu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    z-index: 999;
 }
