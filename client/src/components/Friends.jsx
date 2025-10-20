@@ -1,5 +1,4 @@
-import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "./AuthContext.jsx";
+import { useState, useEffect } from "react";
 import images from "../utility/images.js";
 import { getJson, postJson, putJson, deleteJson } from "../utility/fetchUtility.js";
 import "../css/Friends.css";
@@ -11,9 +10,6 @@ const token = localStorage.getItem('token');
 const modes = { accepted: 0, requests: 1 };
 
 export default function Friends() {
-    // ----- CONTEXTS -----
-    const { user } = useContext(AuthContext);
-
     // ----- STATES -----
     // Search-bar states
     const [searchFriends, setSearchFriends] = useState("");
@@ -64,8 +60,7 @@ export default function Friends() {
             }
             catch (err) {
                 // Set the error
-                setFriendsListError(err.data?.message || err.data?.error ||
-                    "Something went wrong while fetching your friends list. Try again later!");
+                setFriendsListError(err.message);
             }
             // Stop loading after completion
             finally { setLoadingFriends(false) }
@@ -112,16 +107,9 @@ export default function Friends() {
 
             // Set users list to fetched data
             setUsersList(data.users);
-
-            // If fetch found no users, display feedback to user with error message
-            if(data.users.length <= 0) setUsersListError("No users found.");
         } catch (err) {
             // Show error message
-            setUsersListError(
-                err.data?.message ||
-                err.data?.error ||
-                "Something went wrong while fetching users. Try again later!"
-            );
+            setUsersListError(err.message);
         } 
         finally {
             // End loading
@@ -143,18 +131,141 @@ export default function Friends() {
         });
     };
 
+    // Handle adding a friend
+    const sendFriendRequest = async (target) => {
+        try{
+            const created = await postJson(
+                "/friendships/",
+                { receiverId: target.id },
+                { token }
+            );
+            // mark the user in the usersList as a friend
+            setUsersList(prev => {
+                if (!prev) return prev; // nothing to update
+                return prev.map(u =>
+                    u.id === target.id ? { ...u, isFriend: true } : u
+                );
+            });
+
+            // Update friends list's sent array
+            setFriendsList(prev => ({ ...prev, sent: [...prev.sent, created] }));
+        }
+        catch(err) {
+            alert(err.message);
+        }
+    }
+
+    // Handle accepting a friend request
+    const acceptFriendRequest = async (request) => {
+        try{
+            await putJson(
+                `/friendships/${request.id}`,
+                null,
+                { token }
+            );
+            // Update friends list
+            setFriendsList(prev => {
+                if (!prev) return prev;
+
+                // Find the friend request from the received list that matches the accepted one
+                const acceptedRequest = prev.received.find(r => r.id === request.id);
+                if (!acceptedRequest) return prev;
+
+                // Make a copy of the request and mark it as accepted
+                const newAccepted = { ...acceptedRequest, accepted: true };
+
+                // Return new friends list object
+                return {
+                    ...prev,
+                    // Remove accepted request from the 'received' array
+                    received: prev.received.filter(r => r.id !== request.id),
+                    // Add it to the 'accepted' array instead
+                    accepted: [...prev.accepted, newAccepted]
+                };
+            });
+        }
+        catch(err) {
+            alert(err.message);
+        }
+    }
+
     // Handle unfriending a user
     const unfriend = async (friendship) => {
-        console.log(`Unfriended ${friendship.friend.username}`);
-        setSubMenu(prev => ({ ...prev, visible: false }));
+        try{
+            await deleteJson(
+                `/friendships/${friendship.id}`,
+                null,
+                { token }
+            );
+            // Update friends list
+            setFriendsList(prev => {
+                if (!prev) return prev;
+
+                // Remove from accepted, sent, and received arrays
+                return {
+                    ...prev,
+                    accepted: prev.accepted.filter(f => f.id !== friendship.id),
+                    sent: prev.sent.filter(f => f.id !== friendship.id),
+                    received: prev.received.filter(f => f.id !== friendship.id),
+                };
+            });
+
+            // If usersList is loaded, mark this user as not a friend
+            setUsersList(prev => {
+                if (!prev) return prev;
+                return prev.map(u =>
+                    u.id === (friendship.friend?.id || friendship.receiverId) 
+                        ? { ...u, isFriend: false } 
+                        : u
+                );
+            });
+        }
+        catch(err) {
+            alert(err.message);
+        }
+        finally{
+            setSubMenu(prev => ({ ...prev, visible: false }));
+        }
     }
 
     // Handle blocking a user
     const blockUser = async (target) => {
+        // Determine if target is a friend or not
         const isFriend = target.friend;
         const userId = isFriend ? target.friend.id : target.id;
-        console.log(`Blocked user with the ID of ${userId}`);
-        setSubMenu(prev => ({ ...prev, visible: false }));
+
+        // Attempt to block the target
+        try{
+            await postJson(
+                `/blocks/${userId}`,
+                null,
+                { token }
+            );
+
+            // Remove user from friendsList entirely
+            setFriendsList(prev => {
+                if (!prev) return prev;
+
+                return {
+                    ...prev,
+                    accepted: prev.accepted.filter(f => f.friend.id !== userId),
+                    sent: prev.sent.filter(f => f.friend.id !== userId),
+                    received: prev.received.filter(f => f.friend.id !== userId)
+                };
+            });
+
+            // Remove user from usersList entirely
+            setUsersList(prev => {
+                if (!prev) return prev;
+                return prev.filter(u => u.id !== userId);
+            });
+        }
+        catch(err) {
+            alert(err.message);
+        }
+        finally{
+            setSubMenu(prev => ({ ...prev, visible: false }));
+        }
     }
 
     // ----- RENDER -----
@@ -197,7 +308,7 @@ export default function Friends() {
                 {/* Friends list */}
                 {friendsListError ? (
                     // Display an error
-                    <p>{friendsListError}</p>
+                    <p className="fetch-error">{friendsListError}</p>
                     // Show loading component while fetching data
                 ) : loadingFriends ? (
                     <h1>Loading...</h1>
@@ -230,11 +341,11 @@ export default function Friends() {
                                     )
                                 })}
                             </div>
-                        ) : <p>No friends found</p>
+                        ) : <p className="margin-left">No friends found</p>
                     ) : 
                     <div className="list">
                         {/* Received */}
-                        <h1>Received:</h1>
+                        <h1 className="margin-left">Received:</h1>
                         {filteredFriends
                             ?.filter(f => !f.isRequester)
                             .map(f => (
@@ -244,8 +355,18 @@ export default function Friends() {
                                     </div>
 
                                     <div className="user-actions">
-                                        <button className="add-friend-btn">Accept</button>
-                                        <button className="decline-friend-btn">Decline</button>
+                                        <button 
+                                            className="add-friend-btn"
+                                            onClick={ () => acceptFriendRequest(f) }>
+                                                Accept
+                                        </button>
+
+                                        <button 
+                                            className="decline-friend-btn"
+                                            onClick={ () => unfriend(f) }>
+                                                Decline
+                                        </button>
+
                                         <img
                                             src={images.options}
                                             onClick={(e) => handleOptionsClick(e, [
@@ -257,7 +378,7 @@ export default function Friends() {
                         ))}
 
                         {/* Sent */}
-                        <h1>Sent:</h1>
+                        <h1 className="margin-left">Sent:</h1>
                         {filteredFriends
                             ?.filter(f => f.isRequester)
                             .map(f => (
@@ -267,7 +388,12 @@ export default function Friends() {
                                 </div>
 
                                 <div className="user-actions">
-                                    <button className="decline-friend-btn">Delete</button>
+                                    <button 
+                                        className="decline-friend-btn"
+                                        onClick={ () => unfriend(f) }>
+                                            Delete
+                                    </button>
+
                                     <img
                                         src={images.options}
                                         onClick={(e) => handleOptionsClick(e, [
@@ -304,7 +430,7 @@ export default function Friends() {
                 {/* Users list */}
                 {/* Show error message */}
                 {usersListError ? (
-                    <p>{usersListError}</p>
+                    <p className="fetch-error">{usersListError}</p>
                 ) : loadingUsers ? (
                     // Show loading component
                     <h1>Loading...</h1>
@@ -323,7 +449,11 @@ export default function Friends() {
 
                                     <div className="user-actions">
                                         <img src={images.chatFriend}/>
-                                        {!u.isFriend && <button className="add-friend-btn">Add Friend</button> }
+                                        {!u.isFriend && <button 
+                                            className="add-friend-btn"
+                                            onClick={() => sendFriendRequest(u)}>
+                                            Add Friend
+                                        </button> }
                                         <img
                                             src={images.options}
                                             onClick={(e) => handleOptionsClick(e, [
@@ -335,10 +465,10 @@ export default function Friends() {
                             ))}
                         </div>
                     ) : (
-                        <p>No users found</p>
+                        <p className="margin-left">No users found</p>
                     )
                 ) : (
-                    <p>Search for users to add as friends</p>
+                    <p className="margin-left">Search for users to add as friends</p>
                 )}
             </div>
 

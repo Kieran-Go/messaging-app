@@ -14,9 +14,10 @@ img {
     cursor: pointer;
 }
 
-/* Wrapper for main component */
-.main-content{
-    
+/* fetch-error */
+.fetch-error {
+    color: red;
+    font-weight: bold;
 }
 
 /* Media Queries */

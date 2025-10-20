@@ -177,3 +177,8 @@
     background: transparent;
     z-index: 999;
 }
+
+/* Elements to push slightly to the right using margin-left */
+.margin-left, .fetch-error {
+    margin-left: 10px;
+}

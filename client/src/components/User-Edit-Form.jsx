@@ -73,7 +73,7 @@ export default function UserEditForm({ mode, setShowForm }) {
         }
         catch(err) {
             // Display the server-side error
-            setServerError(err.data?.message || err.data?.error || "Something went wrong");
+            setServerError(err.message);
 
             // Re-enable submit
             setAllowSubmit(true);

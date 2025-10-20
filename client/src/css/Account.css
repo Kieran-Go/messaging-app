@@ -5,10 +5,12 @@
 /* Card for account info setting */
 .account-page-wrapper .edit-card{
     display: flex;
+    justify-content: space-between;
     gap: 50px;
     align-items: center;
     border: solid black 1px;
-    width: fit-content;
+    min-width: fit-content;
+    max-width: 250px;
     padding: 5px 20px 5px 20px;
     border-radius: 12px;
     background-color: rgb(219, 219, 219);
@@ -40,6 +42,28 @@
 .account-page-wrapper .delete-btn:hover{
     cursor: pointer;
     background-color: red;
+}
+
+/* Block-list */
+.block-list{
+  border: black 1px solid;
+  border-radius: 12px;
+  min-width: fit-content;
+  max-width: 250px;
+  padding: 5px 20px 5px 20px;
+  margin-bottom: 15px;
+  background-color: rgb(219, 219, 219);
+  box-shadow: 1px 1px 0.5px 0px rgba(0,0,0,0.75);
+}
+
+.block-list .block-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+.block-list .block-item:not(:last-child) {
+  border-bottom: solid black 1px;
 }
 
 /* Black overlay */

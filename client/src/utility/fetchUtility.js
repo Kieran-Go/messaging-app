@@ -19,7 +19,7 @@ export async function request(endpoint, { method = "GET", body, token, headers =
     const data = await res.json().catch(() => null);
 
     // Throw error is response is not ok
-    if (!res.ok) throw { status: res.status, data };
+    if (!res.ok) throw { status: res.status, message: data.message || "Something went wrong" };
 
     // Return parsed JSON data
     return data;
