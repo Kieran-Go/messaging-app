@@ -1,6 +1,6 @@
 /* Main container for sidebar */
 .sidebar{
-    background-color: rgb(203, 232, 255);
+    background-color: rgb(182, 222, 254);
     text-align: center;
     border: dotted black 1px;
     transition: transform 0.3s ease;
@@ -43,7 +43,7 @@
 }
 .menu-select:hover{
     cursor: pointer;
-    background-color: rgb(215, 215, 215);
+    background-color: rgb(0, 151, 251, 0.25);
 }
 
 

@@ -1,0 +1,75 @@
+/* Main wrapper for chats component */
+.chats-page-wrapper{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+/* Column */
+.chats-page-wrapper .column{
+    display: flex;
+    flex-direction: column;
+    border-right: dotted 1px black;
+    height: 100vh;
+}
+
+/* Column head */
+.chats-page-wrapper .column .head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6.5px 20px 6.5px 20px;
+    border-bottom: dotted 1px black;
+}
+
+/* Column head button */
+.chats-page-wrapper .column button{
+    width: fit-content;
+    padding: 5px 20px 5px 20px;
+    background-color: rgb(9, 139, 221);
+    color: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 1px 1px 0.5px 0px rgba(0,0,0,0.75);
+}
+.chats-page-wrapper .column button:hover{
+    cursor: pointer;
+    background-color: rgb(84, 190, 255);
+}
+
+/* chat-list */
+.chat-list{
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+}
+
+/* List item */
+.list-item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid black 1px;
+    padding: 0 10px 0 10px;
+    transition: background-color 0.1s ease-in;
+}
+.list-item:hover{
+    cursor: pointer;
+    background-color: rgb(219, 218, 218);
+}
+
+/* List actions */
+.list-actions{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.list-actions img{
+    border-radius: 50%;
+    padding: 5px;
+    transition: background-color 0.1s ease-in;
+}
+.list-actions img:hover{
+    cursor: pointer;
+    background-color: rgb(195, 195, 195);
+}

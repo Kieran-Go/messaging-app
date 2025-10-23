@@ -4,6 +4,7 @@
     background-color: rgb(210, 245, 255);
     text-align: center;
     padding: 0.25rem;
+    box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.75);
 }
 
 /* Container for the form and related elements */
@@ -16,6 +17,7 @@
     margin: auto;
     margin-top: 50px;
     text-align: center;
+    box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.75);
 }
 
 /* Form styles */

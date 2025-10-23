@@ -9,6 +9,7 @@ import menu from '../assets/img/menu.svg';
 import options from '../assets/img/options.svg';
 import profile from '../assets/img/profile.svg';
 import search from "../assets/img/search.svg";
+import plus from "../assets/img/plus.svg";
 
 export default {
     account,
@@ -22,4 +23,5 @@ export default {
     options,
     profile,
     search,
+    plus,
 }
