@@ -84,18 +84,75 @@ export default function Chats() {
         try{
             const data = await getJson(`/chats/${chatId}`, null, { token });
             setOpenChat(data);
+
+            // --- Locally update chatList to reset unread count for this chat ---
+            setChatList(prevChats => prevChats.map(chat => {
+                if(chat.id === chatId) {
+                    // Reset unread count for current user
+                    const updatedMembers = chat.members.map(m => 
+                        m.user.id === user.id ? { ...m, unreadCount: 0 } : m
+                    );
+                    return { ...chat, members: updatedMembers };
+                }
+                return chat;
+            }));
         }
         catch(err) { setFetchOpenChatError(err.message); }
         finally{ setLoadingOpenChat(false); }
     }
 
-    // Returns the list of chat members, excluding user
-    const getChatMembers = (chatMembers) => 
-        chatMembers
-            .filter(m => m.user.id !== user.id)
-            .map(m => m.user.username)
-            .join(", ");
+    // Returns the list of chat members, excluding current user
+    const getChatMembers = (chatMembers) => {
+        const otherUsers = chatMembers
+            .filter(m => m.user?.id !== user.id)
+            .map(m => m.user?.username || "Deleted User");
 
+        if (otherUsers.length === 0) return "Deleted User";
+
+        return otherUsers.join(", ");
+    };
+
+    // Returns the number of unread messages
+    const getUnreadCount = (members) => {
+        // Find the current user in members
+        const currentUser = members.find(m => m.user.id === user.id);
+
+        // Get the current user's undread count
+        const count = currentUser ? currentUser.unreadCount : 0;
+
+        // Return null if no unread messages
+        if(count <= 0) return null;
+
+        return count;
+    }
+
+    // Hide or leave a chat
+    const leaveChat = async (chat) => {
+        // Confirm if it's a group chat
+        if(chat.isGroup) {
+            if(!confirm("Are you sure you want to leave this group chat?")) return;
+        }
+
+        // Set loading
+        setLoadingChats(true);
+        if(chat.id == openChat?.id) setLoadingOpenChat(true);
+
+        try{
+            // Call backend to leave chat
+            await putJson(`/chats/${chat.id}/leave`, {}, { token });
+
+            // Remove chat from local chatList
+            setChatList((prev) => prev.filter(c => c.id !== chat.id));
+
+            // Close the open chat if it was this one
+            if(openChat?.id === chat.id) setOpenChat(null);
+        }
+        catch(err) { alert(err.message); }
+        finally{ 
+            setLoadingChats(false); 
+            setLoadingOpenChat(false);
+        }
+    }
 
     // ----- RENDER -----
     return(
@@ -123,8 +180,9 @@ export default function Chats() {
                             <div key={c.id} className="list-item">
                                 <h3>{c.name || getChatMembers(c.members)}</h3>
                                 <div className="list-actions">
+                                    <div className="count">{getUnreadCount(c.members)}</div>
                                     <img src={images.chat} onClick={() => fetchOpenChat(c.id)}/>
-                                    <img src={images.close} onClick={() => console.log("Close chat")}/>
+                                    <img src={images.close} onClick={() => leaveChat(c)}/>
                                 </div>
                             </div>
                         )) :
@@ -137,6 +195,7 @@ export default function Chats() {
             {/* ----- OPEN-CHAT COLUMN ----- */}
             <OpenChat 
                 openChat={openChat} 
+                setOpenChat={setOpenChat}
                 loading={loadingOpenChat} 
                 error={fetchOpenChatError} 
                 getChatMembers={getChatMembers}

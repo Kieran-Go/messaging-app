@@ -73,3 +73,16 @@
     cursor: pointer;
     background-color: rgb(195, 195, 195);
 }
+
+/* Count */
+.count{
+    width: fit-content;
+    padding: 0 5px 0 5px;
+    border-radius: 50%;
+    color: white;
+    background-color: red;
+}
+
+.empty-msg{
+    margin-left: 10px;
+}

@@ -6,7 +6,6 @@
     width: 100%;
 }
 
-
 .chat-head img{
     opacity: 50%;
     transition: opacity 0.1s ease-in;
@@ -18,24 +17,21 @@
 
 /* Open chat window */
 .chat-window{
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    padding: 5px;
+    padding: 20px 0 20px 5px;
     background-color: rgb(232, 229, 229);
 }
 
 .chat-window .no-chat-msg{
     color: rgb(85, 85, 85);
     text-align: center;
+    height: 78.5vh;
 }
 
 /* Chat container */
 .chat {
-    display: grid;
-    grid-template-rows: 1fr auto;
-    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    height: 83vh;
     padding: 0 20px;
 }
 
@@ -48,4 +44,47 @@
     border-radius: 8px;
     outline: none;
     box-sizing: border-box;
+}
+.chat-bottom-spacer {
+    height: 1px;
+}
+
+/* Chat messages */
+.messages-scroll {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+}
+
+.message {
+    border-radius: 20px;
+    padding: 8px 12px;
+    margin-right: 10px;
+    width: 425px;
+    min-height: fit-content;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: solid black 3px;
+    word-wrap: break-word;      
+    overflow-wrap: break-word;
+    white-space: normal;
+    box-sizing: border-box;
+}
+
+.sent {
+    background-color: white;
+    margin-left: auto;
+}
+.received{
+    color: white;
+    background-color: rgb(0, 156, 199);
+}
+
+.message .deleted-user, .send-time {
+    font-style: italic;
+    color: #c7c7c7;
 }
