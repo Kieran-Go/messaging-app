@@ -88,8 +88,8 @@ model Block {
   createdAt DateTime @default(now()) @map("created_at")
 
   // relations
-  blocker User @relation("BlocksMade", fields: [blockerId], references: [id])
-  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id])
+  blocker User @relation("BlocksMade", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
 
   @@unique([blockerId, blockedId])
   @@map("blocked_users")

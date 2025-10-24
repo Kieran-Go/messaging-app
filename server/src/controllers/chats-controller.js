@@ -130,33 +130,49 @@ export default {
         });
     },
 
-    // Create a chat message
-    createChatMessage: async(chatId, userId, content) => {
+    createChatMessage: async (chatId, userId, content) => {
+        // Fetch chat and its members
+        const chat = await prisma.chat.findUnique({
+            where: { id: chatId },
+            include: { members: true }
+        });
+
+        if(chat.members.length <= 1) throw newError("You are the only user in this chat");
+
+        // If the chat is not a group, check if either user has blocked the other
+        if (!chat.isGroup) {
+            const otherMember = chat.members.find(m => m.userId !== userId);
+
+            const blocked = await prisma.block.findFirst({
+                where: {
+                    OR: [
+                        { blockerId: userId, blockedId: otherMember.userId },
+                        { blockerId: otherMember.userId, blockedId: userId }
+                    ]
+                }
+            });
+            if (blocked) throw newError("Cannot send messages to this user");
+        }
+
+        // Proceed with transaction
         const [message] = await prisma.$transaction([
-            // Create the new message
             prisma.message.create({
                 data: { chatId, userId, content },
-                include: {
-                    user: { select: { id: true, username: true } },
-                },
+                include: { user: { select: { id: true, username: true } } },
             }),
-
-            // Update chat's updatedAt field
             prisma.chat.update({
                 where: { id: chatId },
                 data: { updatedAt: new Date() }
             }),
-
-            // Unhide chat and increment unread count for chat members except sender
             prisma.chatMember.updateMany({
-                where: {
-                    chatId, userId: { not: userId }
-                },
+                where: { chatId, userId: { not: userId } },
                 data: { unreadCount: { increment: 1 }, hidden: false }
             })
         ]);
+
         return message;
     },
+
 
     // ----- PUT -----
     // Change name of a chat

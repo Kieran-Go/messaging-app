@@ -4,7 +4,7 @@ import validateRequest from './validateRequest.js';
 export default {
 
     friendshipId: [
-        param('id')
+        param('friendshipId')
             .isInt({gt: 0}).withMessage('ID must be a positive integer'),
 
         validateRequest
